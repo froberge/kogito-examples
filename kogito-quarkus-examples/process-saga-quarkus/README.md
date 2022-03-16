@@ -62,14 +62,14 @@ mvn clean compile quarkus:dev
 
 ```
 mvn clean package
-java -jar target/process-saga-quarkus-runner.jar
+java -jar target/quarkus-app/quarkus-run.jar
 ```
 
 ### Package and Run using Local Native Image
 Note that this requires GRAALVM_HOME to point to a valid GraalVM installation
 
 ```
-mvn clean package -Pnative
+mvn clean package -Dnative
 ```
 
 To run the generated native executable, generated in `target/`, execute
@@ -79,6 +79,7 @@ To run the generated native executable, generated in `target/`, execute
 ```
 
 Note: Native builds does not yet work on Windows, GraalVM and Quarkus should be rolling out support for Windows soon.
+Note: Depending on the branch, the runner might have the version number in it.  For example: _process-saga-quarkus-1.18.0.Final-runner_
 
 ## OpenAPI (Swagger) documentation
 [Specification at swagger.io](https://swagger.io/docs/specification/about/)
@@ -87,11 +88,11 @@ You can take a look at the [OpenAPI definition](http://localhost:8080/openapi?fo
 
 In addition, various clients to interact with this service can be easily generated using this OpenAPI definition.
 
-When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes [Swagger UI](http://localhost:8080/swagger-ui/) that you can use to look at available REST endpoints and send test requests.
+When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes [Swagger UI](http://localhost:8080/q/swagger-ui/) that you can use to look at available REST endpoints and send test requests.
 
 ## Usage
 
-Once the service is up and running, you can use the following examples to interact with the service. Note that rather than using the curl commands below, you can also use the [Swagger UI](http://localhost:8080/swagger-ui/) to send requests.
+Once the service is up and running, you can use the following examples to interact with the service. Note that rather than using the curl commands below, you can also use the [Swagger UI](http://localhost:8080/q/swagger-ui/) to send requests.
 
 ### Starting the Order Saga
 
@@ -111,7 +112,7 @@ Given data:
 Curl command (using the JSON object above):
 
 ```sh
-curl -H "Content-Type: application/json" -X POST http://localhost:8080/orders -d '{"orderId" : "03e6cf79-3301-434b-b5e1-d6899b5639aa"}'
+curl -X 'POST' 'http://localhost:8080/order' -H 'accept: */*' -H 'Content-Type: application/json' -d '{ "orderId" : "03e6cf79-3301-434b-b5e1-d6899b5639aa"}'
 ```
 The response for the request is returned with attributes representing the response of each step, either
  success or failure. The `orderResponse` attribute indicates if the order can be confirmed in case of success or
@@ -168,7 +169,7 @@ Example:
 Curl command (using the JSON object above):
 
 ```sh
-curl -H "Content-Type: application/json" -X POST http://localhost:8080/orders -d '{"orderId" : "03e6cf79-3301-434b-b5e1-d6899b5639aa", "failService" : "PaymentService"}' 
+curl -X 'POST' 'http://localhost:8080/order' -H 'accept: */*' -H 'Content-Type: application/json' -d '{ "orderId" : "03e6cf79-3301-434b-b5e1-d6899b5639aa", "failService" : "PaymentService" }'
 ```
 
 Response example:
